@@ -1,0 +1,52 @@
+erDiagram
+    TEACHERS ||--o| USERS : "has account"
+    TEACHERS ||--o{ PUBLICATION_AUTHORS : "writes"
+    PUBLICATIONS ||--o{ PUBLICATION_AUTHORS : "has authors"
+    PUBLICATION_TYPES ||--o{ PUBLICATIONS : "classifies"
+    PUBLICATION_TYPES ||--o{ CITING_PUBLICATIONS : "classifies"
+    PUBLICATIONS ||--o{ PUBLICATION_INDEXING : "is indexed"
+    INDEXING_SOURCES ||--o{ PUBLICATION_INDEXING : "indexes"
+    PUBLICATIONS ||--o{ CITATION_LINKS : "is cited by"
+    CITING_PUBLICATIONS ||--o{ CITATION_LINKS : "cites"
+
+    TEACHERS {
+        int id PK
+        varchar first_name
+        varchar middle_name
+        varchar last_name
+        enum academic_position
+        enum scientific_degree
+        int h_index_scopus
+        int h_index_wos
+    }
+
+    USERS {
+        int id PK
+        varchar email UK
+        varchar password_hash
+        enum role
+        int teacher_id FK
+        boolean is_active_flag
+    }
+
+    PUBLICATIONS {
+        int id PK
+        varchar title
+        varchar venue
+        int publication_year
+        int publication_type_id FK
+        varchar isbn_issn
+        varchar doi UK
+    }
+
+    CITING_PUBLICATIONS {
+        int id PK
+        varchar title
+        varchar authors_text
+        varchar venue
+        int publication_year
+        int publication_type_id FK
+        varchar isbn_issn
+        varchar doi UK
+    }
+

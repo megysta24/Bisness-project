@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head"><h1>{{ "Редакция на публикация" if publication else "Нова публикация" }}</h1></section>
+
+<form method="post" class="form panel">
+    <label>Заглавие<input name="title" required value="{{ publication.title if publication else '' }}"></label>
+    <label>Къде е публикувана<input name="venue" required value="{{ publication.venue if publication else '' }}"></label>
+    <div class="form-grid">
+        <label>Година<input type="number" min="1900" max="2100" name="publication_year" required value="{{ publication.publication_year if publication else 2026 }}"></label>
+        <label>Тип
+            <select name="publication_type_id">
+                {% for type in types %}
+                <option value="{{ type.id }}" {% if publication and publication.publication_type_id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>ISBN/ISSN<input name="isbn_issn" value="{{ publication.isbn_issn if publication else '' }}"></label>
+        <label>DOI<input name="doi" value="{{ publication.doi if publication else '' }}"></label>
+    </div>
+    <fieldset>
+        <legend>Автори от департамента</legend>
+        <div class="checks">
+            {% for teacher in teachers %}
+            <label><input type="checkbox" name="author_ids" value="{{ teacher.id }}" {% if publication and teacher in publication.authors %}checked{% endif %}> {{ teacher.full_name }}</label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Индексиране</legend>
+        <div class="checks">
+            {% for index in indexes %}
+            <label><input type="checkbox" name="indexing_ids" value="{{ index.id }}" {% if publication and index in publication.indexing_sources %}checked{% endif %}> {{ index.name }}</label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    <div class="form-actions">
+        <button class="primary" type="submit">Запази</button>
+        <a class="button" href="{{ url_for('main.publications') }}">Отказ</a>
+    </div>
+</form>
+{% endblock %}
+

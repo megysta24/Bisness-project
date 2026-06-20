@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Главно меню</h1>
+        <p>Навигация към формите, справките и отчетите.</p>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat">
+        <span>Преподаватели</span>
+        <strong>{{ teacher_count }}</strong>
+    </article>
+    <article class="stat">
+        <span>Публикации</span>
+        <strong>{{ publication_count }}</strong>
+    </article>
+    <article class="stat">
+        <span>Цитирания</span>
+        <strong>{{ citation_count }}</strong>
+    </article>
+</section>
+
+<section class="menu-grid">
+    <a href="{{ url_for('main.teachers') }}">Управление на преподаватели</a>
+    <a href="{{ url_for('main.publications') }}">Управление на публикации</a>
+    <a href="{{ url_for('main.citations') }}">Управление на цитирания</a>
+    <a href="{{ url_for('main.reports') }}">Отчети и печат</a>
+</section>
+
+<section class="panel">
+    <h2>Последни публикации</h2>
+    <table>
+        <thead><tr><th>Заглавие</th><th>Година</th><th>Автори</th></tr></thead>
+        <tbody>
+            {% for item in latest_publications %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.publication_year }}</td>
+                <td>{{ item.authors|map(attribute='full_name')|join(', ') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">Няма въведени публикации.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
+

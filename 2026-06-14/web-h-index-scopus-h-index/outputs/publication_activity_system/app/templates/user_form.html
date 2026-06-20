@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head"><h1>{{ "Редакция на потребител" if user else "Нов потребител" }}</h1></section>
+<form method="post" class="form panel narrow">
+    <label>Имейл<input type="email" name="email" required value="{{ user.email if user else '' }}"></label>
+    <label>Парола<input type="password" name="password" {% if not user %}required{% endif %} placeholder="{{ 'Оставете празно, ако не сменяте паролата' if user else '' }}"></label>
+    <label>Роля
+        <select name="role">
+            <option value="admin" {% if user and user.role == 'admin' %}selected{% endif %}>Администратор</option>
+            <option value="department_editor" {% if user and user.role == 'department_editor' %}selected{% endif %}>Редактор общо съдържание</option>
+            <option value="personal_editor" {% if user and user.role == 'personal_editor' %}selected{% endif %}>Редактор лично съдържание</option>
+        </select>
+    </label>
+    <label>Свързан преподавател
+        <select name="teacher_id">
+            <option value="">Няма</option>
+            {% for teacher in teachers %}
+            <option value="{{ teacher.id }}" {% if user and user.teacher_id == teacher.id %}selected{% endif %}>{{ teacher.full_name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label class="inline"><input type="checkbox" name="is_active_flag" {% if not user or user.is_active_flag %}checked{% endif %}> Активен</label>
+    <div class="form-actions">
+        <button class="primary" type="submit">Запази</button>
+        <a class="button" href="{{ url_for('main.users') }}">Отказ</a>
+    </div>
+</form>
+{% endblock %}

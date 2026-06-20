@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Публикации</h1>
+        <p>Списък на научните публикации на преподавателите.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('main.publication_new') }}">Нова публикация</a>
+</section>
+
+<form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Търсене по заглавие, издание или DOI">
+    <button type="submit">Търси</button>
+</form>
+
+<section class="panel">
+    <table>
+        <thead>
+            <tr>
+                <th>Заглавие</th><th>Автори</th><th>Издание</th><th>Година</th><th>Индексиране</th><th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for publication in publications %}
+            {% set author_ids = publication.authors|map(attribute='id')|list %}
+            <tr>
+                <td>
+                    <strong>{{ publication.title }}</strong>
+                    <small>{{ publication.publication_type.name }}{% if publication.doi %}, DOI {{ publication.doi }}{% endif %}</small>
+                </td>
+                <td>{{ publication.authors|map(attribute='full_name')|join(', ') }}</td>
+                <td>{{ publication.venue }}</td>
+                <td>{{ publication.publication_year }}</td>
+                <td>{{ publication.indexing_sources|map(attribute='name')|join(', ') }}</td>
+                <td class="actions">
+                    {% if current_user.can_edit_all_content() or current_user.teacher_id in author_ids %}
+                    <a href="{{ url_for('main.publication_edit', publication_id=publication.id) }}">Редакция</a>
+                    <form method="post" action="{{ url_for('main.publication_delete', publication_id=publication.id) }}" data-confirm="Да се изтрие ли публикацията?">
+                        <button type="submit" class="danger">Изтрий</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Няма намерени записи.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

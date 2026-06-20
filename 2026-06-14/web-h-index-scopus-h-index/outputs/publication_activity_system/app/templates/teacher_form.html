@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>{{ "Редакция на преподавател" if teacher else "Нов преподавател" }}</h1>
+    </div>
+</section>
+
+<form method="post" class="form panel narrow">
+    <div class="form-grid">
+        <label>Име<input name="first_name" required value="{{ teacher.first_name if teacher else '' }}"></label>
+        <label>Презиме<input name="middle_name" required value="{{ teacher.middle_name if teacher else '' }}"></label>
+        <label>Фамилия<input name="last_name" required value="{{ teacher.last_name if teacher else '' }}"></label>
+        <label>Академична длъжност
+            <select name="academic_position">
+                {% for item in ["асистент", "главен асистент", "доцент", "професор"] %}
+                <option value="{{ item }}" {% if teacher and teacher.academic_position == item %}selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Научна степен
+            <select name="scientific_degree">
+                {% for item in ["доктор", "доктор на науките"] %}
+                <option value="{{ item }}" {% if teacher and teacher.scientific_degree == item %}selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>h-index Scopus<input type="number" min="0" name="h_index_scopus" value="{{ teacher.h_index_scopus if teacher else 0 }}"></label>
+        <label>h-index WoS<input type="number" min="0" name="h_index_wos" value="{{ teacher.h_index_wos if teacher else 0 }}"></label>
+    </div>
+    <div class="form-actions">
+        <button class="primary" type="submit">Запази</button>
+        <a class="button" href="{{ url_for('main.teachers') }}">Отказ</a>
+    </div>
+</form>
+{% endblock %}
+

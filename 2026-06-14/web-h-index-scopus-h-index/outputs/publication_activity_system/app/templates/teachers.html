@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Преподаватели</h1>
+        <p>Въвеждане, корекция, изтриване и търсене.</p>
+    </div>
+    {% if current_user.can_edit_all_content() %}
+    <a class="button primary" href="{{ url_for('main.teacher_new') }}">Нов преподавател</a>
+    {% endif %}
+</section>
+
+<form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Търсене по име или длъжност">
+    <button type="submit">Търси</button>
+</form>
+
+<section class="panel">
+    <table>
+        <thead>
+            <tr>
+                <th>Име</th><th>Длъжност</th><th>Степен</th><th>Scopus</th><th>WoS</th><th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher in teachers %}
+            <tr>
+                <td>{{ teacher.display_title }}</td>
+                <td>{{ teacher.academic_position }}</td>
+                <td>{{ teacher.scientific_degree }}</td>
+                <td>{{ teacher.h_index_scopus }}</td>
+                <td>{{ teacher.h_index_wos }}</td>
+                <td class="actions">
+                    {% if current_user.can_edit_all_content() or current_user.teacher_id == teacher.id %}
+                    <a href="{{ url_for('main.teacher_edit', teacher_id=teacher.id) }}">Редакция</a>
+                    {% endif %}
+                    {% if current_user.can_edit_all_content() %}
+                    <form method="post" action="{{ url_for('main.teacher_delete', teacher_id=teacher.id) }}" data-confirm="Да се изтрие ли преподавателят?">
+                        <button type="submit" class="danger">Изтрий</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Няма намерени записи.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
+

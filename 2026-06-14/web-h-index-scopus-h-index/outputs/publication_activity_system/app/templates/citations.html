@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Цитирания</h1>
+        <p>Публикации, в които са цитирани публикации на департамента.</p>
+    </div>
+    {% if current_user.can_edit_all_content() %}
+    <a class="button primary" href="{{ url_for('main.citation_new') }}">Ново цитиране</a>
+    {% endif %}
+</section>
+
+<section class="panel">
+    <table>
+        <thead><tr><th>Цитираща публикация</th><th>Автори</th><th>Година</th><th>Цитира публикации</th><th>Действия</th></tr></thead>
+        <tbody>
+            {% for citation in citations %}
+            <tr>
+                <td><strong>{{ citation.title }}</strong><small>{{ citation.venue }}{% if citation.doi %}, DOI {{ citation.doi }}{% endif %}</small></td>
+                <td>{{ citation.authors_text }}</td>
+                <td>{{ citation.publication_year }}</td>
+                <td>{{ citation.cited_publications|map(attribute='title')|join('; ') }}</td>
+                <td class="actions">
+                    {% if current_user.can_edit_all_content() %}
+                    <a href="{{ url_for('main.citation_edit', citation_id=citation.id) }}">Редакция</a>
+                    <form method="post" action="{{ url_for('main.citation_delete', citation_id=citation.id) }}" data-confirm="Да се изтрие ли цитиращата публикация?">
+                        <button class="danger" type="submit">Изтрий</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Няма въведени цитирания.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

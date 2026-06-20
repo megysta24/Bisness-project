@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head no-print">
+    <div>
+        <h1>Отчети</h1>
+        <p>Брой публикации и цитирания по преподавател и общо за департамента.</p>
+    </div>
+    <button class="primary" type="button" onclick="window.print()">Печат</button>
+</section>
+
+<section class="print-title">
+    <h1>Отчет за публикационната активност</h1>
+    <p>Департамент Информатика</p>
+</section>
+
+<section class="stats-grid">
+    <article class="stat"><span>Общо преподаватели</span><strong>{{ totals.teachers }}</strong></article>
+    <article class="stat"><span>Общо публикации</span><strong>{{ totals.publications }}</strong></article>
+    <article class="stat"><span>Общо цитирания</span><strong>{{ totals.citations }}</strong></article>
+</section>
+
+<section class="panel">
+    <table>
+        <thead>
+            <tr><th>Преподавател</th><th>h-index Scopus</th><th>h-index WoS</th><th>Публикации</th><th>Цитирания</th></tr>
+        </thead>
+        <tbody>
+            {% for teacher, publications_count, citations_count in rows %}
+            <tr>
+                <td>{{ teacher.display_title }}</td>
+                <td>{{ teacher.h_index_scopus }}</td>
+                <td>{{ teacher.h_index_wos }}</td>
+                <td>{{ publications_count }}</td>
+                <td>{{ citations_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
+

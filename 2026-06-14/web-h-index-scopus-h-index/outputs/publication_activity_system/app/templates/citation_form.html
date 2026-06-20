@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head"><h1>{{ "Редакция на цитиране" if citation else "Ново цитиране" }}</h1></section>
+
+<form method="post" class="form panel">
+    <label>Заглавие<input name="title" required value="{{ citation.title if citation else '' }}"></label>
+    <label>Автори<input name="authors_text" required value="{{ citation.authors_text if citation else '' }}"></label>
+    <label>Къде е публикувана<input name="venue" required value="{{ citation.venue if citation else '' }}"></label>
+    <div class="form-grid">
+        <label>Година<input type="number" min="1900" max="2100" name="publication_year" required value="{{ citation.publication_year if citation else 2026 }}"></label>
+        <label>Тип
+            <select name="publication_type_id">
+                {% for type in types %}
+                <option value="{{ type.id }}" {% if citation and citation.publication_type_id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>ISBN/ISSN<input name="isbn_issn" value="{{ citation.isbn_issn if citation else '' }}"></label>
+        <label>DOI<input name="doi" value="{{ citation.doi if citation else '' }}"></label>
+    </div>
+    <fieldset>
+        <legend>Цитирани публикации на департамента</legend>
+        <div class="checks">
+            {% for publication in publications %}
+            <label><input type="checkbox" name="publication_ids" value="{{ publication.id }}" {% if citation and publication in citation.cited_publications %}checked{% endif %}> {{ publication.title }}</label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    <div class="form-actions">
+        <button class="primary" type="submit">Запази</button>
+        <a class="button" href="{{ url_for('main.citations') }}">Отказ</a>
+    </div>
+</form>
+{% endblock %}
